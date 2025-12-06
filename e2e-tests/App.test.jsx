@@ -17,7 +17,7 @@ describe('Pokedex', () => {
 })
 
 describe('Pokedex', () => {
-  test('front page can be opened part 2', async ({ page }) => {
+  test('pokemon page can be navigated to', async ({ page }) => {
     await page.goto('http://localhost:8080/')
 
     await page.getByRole('link', { name: 'pikachu' }).click();
