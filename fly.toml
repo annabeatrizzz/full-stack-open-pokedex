@@ -28,4 +28,4 @@ primary_region = 'lhr'
   cpus = 1
 
 [deploy]
-  strategy: "canary"
+  strategy = "canary"
