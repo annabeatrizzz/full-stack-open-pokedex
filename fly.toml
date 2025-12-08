@@ -22,6 +22,14 @@ primary_region = 'lhr'
   min_machines_running = 0
   processes = ['app']
 
+[[http_service.http_checks]]
+  interval = "15s"        # how often to run the check
+  timeout = "2s"          # how long to wait for a response
+  method = "get"          # HTTP method
+  path = "/version"       # endpoint to check
+  protocol = "http"       # or "https" if your app enforces it
+  grace_period = "10s"    # time to wait after starting before first check
+
 [[vm]]
   memory = '1gb'
   cpu_kind = 'shared'
