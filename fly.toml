@@ -26,7 +26,7 @@ primary_region = 'lhr'
   interval = "15s"        # how often to run the check
   timeout = "2s"          # how long to wait for a response
   method = "get"          # HTTP method
-  path = "/version"       # endpoint to check
+  path = "/health"       # endpoint to check
   protocol = "http"       # or "https" if your app enforces it
   grace_period = "10s"    # time to wait after starting before first check
 
