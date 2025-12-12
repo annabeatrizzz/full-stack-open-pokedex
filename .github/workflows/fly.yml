@@ -38,6 +38,7 @@ jobs:
             A new version of Pokedex was deployed
             Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
+
       - name: Notify failure
         if: ${{ failure() }}
         env:
