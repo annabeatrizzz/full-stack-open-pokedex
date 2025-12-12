@@ -29,6 +29,27 @@ jobs:
       - name: Verify deployment health
         run: curl -f https://full-stack-open-pokedex-frosty-hill-5173.fly.dev/health
 
+      - name: Notify success
+        if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOY == 'false' }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          color: #008000
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: |
+            A new version of Pokedek deployed
+            Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+
+
+      - name: Notify failure
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          color: #FF0000
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          details: |
+            Build failed
+            Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+
   tag_release:
     needs: [deploy]
     runs-on: ubuntu-latest
