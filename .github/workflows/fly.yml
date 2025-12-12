@@ -1,3 +1,4 @@
+
 name: Fly Deploy
 on:
   push:
@@ -7,9 +8,6 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize]
-
-env:
-  SKIP_DEPLOY: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
 
 jobs:
   deploy:
@@ -30,34 +28,34 @@ jobs:
         run: curl -f https://full-stack-open-pokedex-frosty-hill-5173.fly.dev/health
 
       - name: Notify success
-        if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOY == 'false' }}
+        if: ${{ steps.deploy_step.outcome == 'success' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         uses: rjstone/discord-webhook-notify@v2
         with:
           color: #008000
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: |
-            A new version of Pokedek deployed
-            Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-
+            A new version of Pokedex was deployed
+            Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
       - name: Notify failure
         if: ${{ failure() }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         uses: rjstone/discord-webhook-notify@v2
         with:
           color: #FF0000
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
           details: |
-            Build failed
-            Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            Build fail
+            Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
   tag_release:
     needs: [deploy]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' && env.SKIP_DEPLOY == 'false' }}
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
         uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
