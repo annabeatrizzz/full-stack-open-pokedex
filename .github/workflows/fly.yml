@@ -30,7 +30,7 @@ jobs:
         run: curl -f https://full-stack-open-pokedex-frosty-hill-5173.fly.dev/health
 
       - name: Notify success
-        if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOY == 'false' }}
+        if: ${{ steps.deploy_step.outcome == 'success' }}
         uses: rjstone/discord-webhook-notify@v2
         with:
           color: #008000
