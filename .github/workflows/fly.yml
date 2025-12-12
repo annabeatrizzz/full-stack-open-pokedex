@@ -19,6 +19,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       
       - name: Deploy to Fly.io
+        id: deploy_step
         if: ${{ github.event_name == 'push' }}
         run: flyctl deploy --remote-only
         env:
@@ -37,7 +38,6 @@ jobs:
           title: |
             A new version of Pokedex was deployed
             Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-
 
       - name: Notify failure
         if: ${{ failure() }}
